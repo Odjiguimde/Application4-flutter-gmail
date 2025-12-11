@@ -23,7 +23,7 @@ class PageGmail extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            Container(height: 70, child: const Center()),
+            SizedBox(height: 20, child: const Center()),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -31,18 +31,33 @@ class PageGmail extends StatelessWidget {
                 children: [
                   // Titre Gmail
                   Container(
-                    padding: const EdgeInsets.only(left: 16, bottom: 16),
+                    padding: const EdgeInsets.only(left: 16, bottom: 10),
                     child: const Text(
                       "Gmail",
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 30,
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
                       ),
                     ),
                   ),
+                  const Divider(
+                    height: 20, // Espace vertical autour de la ligne
+                    thickness: 1, // Épaisseur de la ligne
+                    color: Colors.grey, // Couleur de la ligne
+                    indent: 16, // Décallage à gauche
+                    endIndent: 16, // Décallage à droite
+                  ),
                   // Section "Toutes les boîtes"
                   _buildMenuItem("Toutes les boîtes"),
+                  const Divider(
+                    height: 20, // Espace vertical autour de la ligne
+                    thickness: 1, // Épaisseur de la ligne
+                    color: Colors.grey, // Couleur de la ligne
+                    indent: 16, // Décallage à gauche
+                    endIndent: 16, // Décallage à droite
+                  ),
+                  // Ici le badge veut dire le nombres totals de notifications qu'on a dans notre titre
                   _buildMenuItem("Principale", badge: "99+"),
                   _buildMenuItem("Promotions", checked: true),
                   _buildMenuItem("Réseaux sociaux"),
@@ -61,6 +76,7 @@ class PageGmail extends StatelessWidget {
                     ),
                   ),
                   Container(height: 12),
+                  //Ici le checked :true veut dire qu'il y'a des notifications pour le titre concerné
                   _buildMenuItem("Messages suivis", checked: true),
                   _buildMenuItem("En attente"),
                   _buildMenuItem("Important", badge: "348"),
@@ -75,132 +91,42 @@ class PageGmail extends StatelessWidget {
           ],
         ),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            // Section Promotions
-            Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              child: const Text(
-                "Promotions",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              child: _buildEmailItem(
-                "Jan Hendrik von Ahlen | JobLeads — Vo...",
-              ),
-            ),
-            // Section Notifications
-            Container(
-              margin: const EdgeInsets.only(bottom: 5),
-              child: const Text(
-                "Notifications",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              child: _buildEmailItem(
-                "Duolingo — 💬 Snif... C'est pas t...",
-                isBold: true,
-              ),
-            ),
-            // Divider
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              child: const Divider(height: 1),
-            ),
-            // GalsenAI
-            Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              child: _buildEmailItemWithSender(
-                "GalsenAI",
-                "Programme à l'instant: Conféren...\nGalsenAI vous invite à un nouvel événement...",
-              ),
-            ),
-            // Divider
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              child: const Divider(height: 1),
-            ),
-            // LinkedIn Job Alerts 1
-            Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              child: _buildEmailItemWithSender(
-                "LinkedIn Job Alerts",
-                "\"data science\": X-FLOW - Data Scientist: X-FLOW Data Scientist: X-FLOW is a m...",
-              ),
-            ),
-            // Divider
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              child: const Divider(height: 1),
-            ),
-            // CMC Spotlight
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              child: _buildEmailItemWithSender(
-                "CMC Spotlight",
-                "BlackRock Wants Staking for Etherer...\nExplore the latest industry news, insight...",
-              ),
-            ),
-            // Divider
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              child: const Divider(height: 1),
-            ),
-            // LinkedIn Job Alerts 2
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              child: _buildEmailItemWithSender(
-                "LinkedIn Job Alerts",
-                "\"data scientist\": X-FLOW - Data Scientist: X-FLOW Data Scientist: X-FLOW is a m...",
-              ),
-            ),
-            // Divider
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              child: const Divider(height: 1),
-            ),
-            // JobLeads
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              child: _buildEmailItemWithSender(
-                "JobLeads",
-                "Confidential / personal: your network",
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
+  //Widgt pour generaliser l'affichage de chaque element dans le drawer
   Widget _buildMenuItem(String title, {bool checked = false, String? badge}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(
+    IconData icon = _getIconForTitle(title);
+
+    return ListTile(
+      leading: Icon(
+        icon,
+        size: 24,
+        color:
+            checked //on verifie ici si il y'a une notification dans la ligne (a droite)
+            //si oui elle s'affiche en rouge sinon elle reste gris
+            ? const Color.fromARGB(255, 243, 33, 33)
+            : Colors.grey[600],
+      ),
+      title: Row(
         children: [
-          Checkbox(
-            value: checked,
-            onChanged: (value) {},
-            activeColor: Colors.blue,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(fontSize: 14, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 14,
+                color: checked
+                    ? const Color.fromARGB(255, 243, 33, 33)
+                    : Colors.black87,
+                fontWeight: checked ? FontWeight.w500 : FontWeight.normal,
+              ),
             ),
           ),
           if (badge != null)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: const Color.fromARGB(255, 243, 33, 44),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -214,46 +140,42 @@ class PageGmail extends StatelessWidget {
             ),
         ],
       ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      minLeadingWidth: 0, // Réduit l'espace par défaut de l'icône
     );
   }
 
-  Widget _buildEmailItem(String content, {bool isBold = false}) {
-    return Container(
-      child: Text(
-        content,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-          color: Colors.grey[700],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmailItemWithSender(String sender, String content) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 6),
-            child: Text(
-              sender,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          Container(
-            child: Text(
-              content,
-              style: TextStyle(fontSize: 13, color: Colors.grey[700]),
-            ),
-          ),
-        ],
-      ),
-    );
+  //Widget pour charger les differents icones des elements present dans le drawer
+  IconData _getIconForTitle(String title) {
+    switch (title) {
+      case "Toutes les boîtes":
+        return Icons.all_inbox;
+      case "Principale":
+        return Icons.inbox;
+      case "Promotions":
+        return Icons.local_offer_outlined;
+      case "Réseaux sociaux":
+        return Icons.people_outline;
+      case "Notifications":
+        return Icons.notifications_none;
+      case "Messages suivis":
+        return Icons.label_important_outline;
+      case "En attente":
+        return Icons.schedule_outlined;
+      case "Important":
+        return Icons.star_border;
+      case "Achats":
+        return Icons.shopping_bag_outlined;
+      case "Envoyés":
+        return Icons.send_outlined;
+      case "Planifié":
+        return Icons.access_time_outlined;
+      case "Boîte d'envoi":
+        return Icons.outbox_outlined;
+      case "Brouillons":
+        return Icons.drafts_outlined;
+      default:
+        return Icons.folder_outlined;
+    }
   }
 }
